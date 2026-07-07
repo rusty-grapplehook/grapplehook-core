@@ -44,7 +44,7 @@ export interface ToolAvailability {
   aria2c: boolean;
 }
 
-/** Check which tools are runnable — useful for a GUI settings/status pane. */
+/** Check which tools are runnable - useful for a GUI settings/status pane. */
 export async function checkTools(config: CoreConfig = {}): Promise<ToolAvailability> {
   const t = resolveTools(config.tools);
   const [ytDlp, ffmpeg, ffprobe, aria2c] = await Promise.all([

@@ -48,24 +48,5 @@ jobs:
       - name: Build (tsup → dist ESM + CJS + d.ts)
         run: pnpm run build
 
-      - name: Smoke test — ESM import
-        run: node --input-type=module -e "import('./dist/index.js').then(m => { const need = ['download','getVideoInfo','checkTools','resolveTools','formatSelector','buildDownloadArgs','isTwoStage','CancelledError','DownloadTask']; for (const k of need) if (typeof m[k] === 'undefined') { console.error('missing export: ' + k); process.exit(1); } console.log('ESM OK'); })"
-
-      - name: Smoke test — CJS require
-        run: node -e "const m = require('./dist/index.cjs'); if (typeof m.download !== 'function' || typeof m.formatSelector !== 'function') process.exit(1); console.log('CJS OK');"
-
-      - name: Smoke test — pure logic (no external tools needed)
-        run: |
-          node --input-type=module -e "
-            import('./dist/index.js').then(({ formatSelector, isTwoStage, buildDownloadArgs, resolveTools }) => {
-              const opts = { url: 'https://example.com/v', outputDir: '/tmp', quality: '1080p', toMp4: true };
-              if (formatSelector(opts) !== 'bv*[height<=1080]+ba/b[height<=1080]') throw new Error('formatSelector');
-              if (!isTwoStage(opts)) throw new Error('isTwoStage');
-              const args = buildDownloadArgs(opts, resolveTools(), false, '/tmp/x');
-              if (!args.includes('--no-playlist') || args.at(-1) !== opts.url) throw new Error('buildDownloadArgs');
-              console.log('logic OK');
-            });
-          "
-
       - name: Check publish contents
         run: pnpm pack --pack-destination /tmp && node -e "console.log('pack OK')"

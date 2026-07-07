@@ -3,13 +3,13 @@
 Framework-agnostic core for **grapplehook**. It orchestrates `yt-dlp`, `ffmpeg`,
 and `aria2c` to fetch video info and download/transcode videos, exposing a clean
 Node API with **structured progress events**, **cancellation**, and
-**injectable binary paths** — so the same logic powers both the CLI and a desktop
+**injectable binary paths** - so the same logic powers both the CLI and a desktop
 (Electron) GUI.
 
 Zero runtime dependencies. Ships ESM + CJS + types.
 
 > The external tools (`yt-dlp`, `ffmpeg`/`ffprobe`, and optionally `aria2c`) are
-> not bundled — they must be resolvable at runtime, either on `PATH` or via
+> not bundled - they must be resolvable at runtime, either on `PATH` or via
 > configured paths (handy for bundling with an app).
 
 ## Install
@@ -48,7 +48,7 @@ task.on('progress', (p) => {
   console.log(p.stage, p.percent, p.speed, p.eta);
 });
 
-// Cancel any time — kills subprocesses and removes partial files:
+// Cancel any time - kills subprocesses and removes partial files:
 // task.cancel();
 
 const { outputPath } = await task.done; // rejects with CancelledError if cancelled
@@ -85,17 +85,17 @@ const task = download(opts, config);
 
 ## API
 
-- `getVideoInfo(url, config?) => Promise<VideoInfo>` — title, uploader, duration,
+- `getVideoInfo(url, config?) => Promise<VideoInfo>` - title, uploader, duration,
   thumbnail, `formats[]`, and distinct `heights[]`.
-- `download(options, config?) => DownloadTask` — starts a job. The task is an
+- `download(options, config?) => DownloadTask` - starts a job. The task is an
   `EventEmitter` (`progress`, `log`) plus:
-  - `task.done: Promise<DownloadResult>` — resolves with `{ outputPath }`.
-  - `task.cancel(): void` — stops it (tree-kills subprocesses, cleans temp files).
-- `checkTools(config?) => Promise<{ ytDlp, ffmpeg, ffprobe, aria2c }>` — booleans.
-- `resolveTools(paths?)`, `hasAria2c(path)` — lower-level helpers.
-- `formatSelector(options)`, `buildDownloadArgs(...)`, `isTwoStage(options)` —
+  - `task.done: Promise<DownloadResult>` - resolves with `{ outputPath }`.
+  - `task.cancel(): void` - stops it (tree-kills subprocesses, cleans temp files).
+- `checkTools(config?) => Promise<{ ytDlp, ffmpeg, ffprobe, aria2c }>` - booleans.
+- `resolveTools(paths?)`, `hasAria2c(path)` - lower-level helpers.
+- `formatSelector(options)`, `buildDownloadArgs(...)`, `isTwoStage(options)` -
   exposed for testing/inspection.
-- `CancelledError` — the rejection type when a task is cancelled.
+- `CancelledError` - the rejection type when a task is cancelled.
 
 ### `DownloadOptions`
 
@@ -105,18 +105,18 @@ const task = download(opts, config);
 
 ## How progress works
 
-- **yt-dlp native downloader** — progress comes from a `--progress-template` line
+- **yt-dlp native downloader** - progress comes from a `--progress-template` line
   parsed into `{ percent, speed, eta, downloadedBytes, totalBytes }`.
-- **aria2c** (used automatically when installed, unless `noAria2c`) — parsed from
+- **aria2c** (used automatically when installed, unless `noAria2c`) - parsed from
   aria2c's console readout; slightly coarser but includes percent/speed/eta.
-- **transcode** — parsed from ffmpeg's `-progress` output against the media
+- **transcode** - parsed from ffmpeg's `-progress` output against the media
   duration, so you get a real transcode progress bar (and an ETA from the encode
   speed).
 
 ## Notes
 
 - The pipeline downloads into a hidden temp dir inside `outputDir`, then moves
-  (single stream) or transcodes (`--mp4`) to the final path — so `outputDir`
+  (single stream) or transcodes (`--mp4`) to the final path - so `outputDir`
   never holds partial files, and a cancel leaves nothing behind.
 - Cancellation tree-kills the process group on macOS/Linux and uses `taskkill /T`
   on Windows, so yt-dlp's child processes (aria2c/ffmpeg) are cleaned up too.

@@ -84,6 +84,6 @@ export interface VideoInfo {
   durationSeconds: number | null;
   thumbnail: string | null;
   formats: VideoFormat[];
-  /** Distinct video heights available, descending — handy for a quality picker. */
+  /** Distinct video heights available, descending - handy for a quality picker. */
   heights: number[];
 }
