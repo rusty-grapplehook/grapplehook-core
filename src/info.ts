@@ -1,6 +1,6 @@
-import type { CoreConfig, VideoFormat, VideoInfo } from './types.js';
 import { resolveTools } from './binaries.js';
 import { capture } from './exec.js';
+import type { CoreConfig, VideoFormat, VideoInfo } from './types.js';
 
 interface RawFormat {
   format_id?: string;

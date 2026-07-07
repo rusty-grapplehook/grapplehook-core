@@ -1,13 +1,13 @@
+import type { ChildProcess } from 'node:child_process';
+import { EventEmitter } from 'node:events';
 import fs from 'node:fs';
 import path from 'node:path';
-import { EventEmitter } from 'node:events';
-import type { ChildProcess } from 'node:child_process';
-import type { CoreConfig, DownloadOptions, DownloadResult, DownloadStage, ProgressEvent } from './types.js';
-import { resolveTools, hasAria2c, type ResolvedTools } from './binaries.js';
 import { buildDownloadArgs, isTwoStage } from './args.js';
-import { spawnStreaming, killTree } from './exec.js';
-import { parseYtDlpProgress, parseAria2cProgress } from './progress.js';
+import { hasAria2c, resolveTools, type ResolvedTools } from './binaries.js';
+import { killTree, spawnStreaming } from './exec.js';
+import { parseAria2cProgress, parseYtDlpProgress } from './progress.js';
 import { transcodeToMp4 } from './transcode.js';
+import type { CoreConfig, DownloadOptions, DownloadResult, DownloadStage, ProgressEvent } from './types.js';
 
 const DETACHED = process.platform !== 'win32';
 const MEDIA_EXTS = ['.mp4', '.mkv', '.webm', '.mov', '.m4a', '.opus', '.ogg', '.aac', '.mp3'];

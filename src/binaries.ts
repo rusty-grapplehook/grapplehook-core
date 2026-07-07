@@ -1,5 +1,5 @@
-import type { CoreConfig, ToolPaths } from './types.js';
 import { capture } from './exec.js';
+import type { CoreConfig, ToolPaths } from './types.js';
 
 export interface ResolvedTools {
   ytDlp: string;

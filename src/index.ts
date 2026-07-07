@@ -1,17 +1,17 @@
 export type {
-  ToolPaths,
   CoreConfig,
-  Quality,
   DownloadOptions,
+  DownloadResult,
   DownloadStage,
   ProgressEvent,
-  DownloadResult,
+  Quality,
+  ToolPaths,
   VideoFormat,
   VideoInfo,
 } from './types.js';
 
-export { getVideoInfo } from './info.js';
-export { download, DownloadTask, CancelledError } from './download.js';
+export { buildDownloadArgs, formatSelector, isTwoStage } from './args.js';
+export { checkTools, hasAria2c, resolveTools, type ResolvedTools, type ToolAvailability } from './binaries.js';
+export { CancelledError, DownloadTask, download } from './download.js';
 export type { DownloadTaskEvents } from './download.js';
-export { resolveTools, hasAria2c, checkTools, type ResolvedTools, type ToolAvailability } from './binaries.js';
-export { formatSelector, buildDownloadArgs, isTwoStage } from './args.js';
+export { getVideoInfo } from './info.js';

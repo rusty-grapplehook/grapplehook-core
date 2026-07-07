@@ -1,5 +1,5 @@
-import type { DownloadOptions } from './types.js';
 import type { ResolvedTools } from './binaries.js';
+import type { DownloadOptions } from './types.js';
 
 /** Does this run use the two-stage download -> transcode pipeline? */
 export function isTwoStage(opts: DownloadOptions): boolean {

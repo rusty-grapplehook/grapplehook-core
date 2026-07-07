@@ -1,9 +1,9 @@
-import fs from 'node:fs';
 import type { ChildProcess } from 'node:child_process';
-import type { DownloadOptions, ProgressEvent } from './types.js';
+import fs from 'node:fs';
 import type { ResolvedTools } from './binaries.js';
 import { capture, spawnStreaming } from './exec.js';
 import { makeFfmpegProgressParser } from './progress.js';
+import type { DownloadOptions, ProgressEvent } from './types.js';
 
 const DETACHED = process.platform !== 'win32';
 
