@@ -53,7 +53,8 @@ jobs:
         shell: bash
         run: |
           pnpm pack --pack-destination "$RUNNER_TEMP"
-          TARBALL=$(ls "$RUNNER_TEMP"/grapplehook-core-*.tgz)
+          cd "$RUNNER_TEMP"
+          TARBALL=$(ls grapplehook-core-*.tgz)
           echo "Inspecting $TARBALL"
           CONTENTS=$(tar -tf "$TARBALL")
           echo "$CONTENTS"
