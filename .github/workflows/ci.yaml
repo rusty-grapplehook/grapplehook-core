@@ -17,7 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: 24
+        # Matrix values must be arrays — a bare scalar here fails workflow parsing.
+        node: [24]
         os: [ubuntu-latest]
         include:
           # One extra leg each on macOS/Windows since exec/kill logic is
@@ -48,5 +49,24 @@ jobs:
       - name: Build (tsup → dist ESM + CJS + d.ts)
         run: pnpm run build
 
-      - name: Check publish contents
-        run: pnpm pack --pack-destination /tmp && node -e "console.log('pack OK')"
+      - name: Verify publish contents
+        shell: bash
+        run: |
+          pnpm pack --pack-destination "$RUNNER_TEMP"
+          TARBALL=$(ls "$RUNNER_TEMP"/grapplehook-core-*.tgz)
+          echo "Inspecting $TARBALL"
+          tar -tf "$TARBALL" | tee /dev/stderr | grep -q "package/dist/index.js"
+          tar -tf "$TARBALL" | grep -q "package/dist/index.cjs"
+          tar -tf "$TARBALL" | grep -q "package/dist/index.d.ts"
+          # Fail if source or config files leak into the tarball
+          if tar -tf "$TARBALL" | grep -E "package/(src/|tsconfig|eslint)"; then
+            echo "Unexpected files in publish tarball" >&2
+            exit 1
+          fi
+          echo "pack OK"
+
+      - name: Smoke test (import ESM + require CJS)
+        shell: bash
+        run: |
+          node -e "import('./dist/index.js').then(m => { if (!m.download || !m.getVideoInfo || !m.checkTools) throw new Error('missing ESM exports'); console.log('ESM OK'); })"
+          node -e "const m = require('./dist/index.cjs'); if (!m.download || !m.getVideoInfo || !m.checkTools) throw new Error('missing CJS exports'); console.log('CJS OK')"

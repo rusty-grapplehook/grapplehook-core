@@ -40,7 +40,20 @@
     "core",
     "grapplehook"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rusty-grapplehook/grapplehook-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rusty-grapplehook/grapplehook-core/issues"
+  },
+  "homepage": "https://github.com/rusty-grapplehook/grapplehook-core#readme",
+  "author": "kitsupanic",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.0.1",
