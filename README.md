@@ -23,9 +23,9 @@ npm install grapplehook-core
 ### Fetch info (for a quality picker / preview)
 
 ```ts
-import { getVideoInfo } from "grapplehook-core";
+import { getVideoInfo } from 'grapplehook-core';
 
-const info = await getVideoInfo("https://youtu.be/<id>");
+const info = await getVideoInfo('https://youtu.be/<id>');
 console.log(info.title, info.durationSeconds, info.thumbnail);
 console.log(info.heights); // e.g. [2160, 1440, 1080, 720, ...] for a dropdown
 ```
@@ -33,16 +33,16 @@ console.log(info.heights); // e.g. [2160, 1440, 1080, 720, ...] for a dropdown
 ### Download with progress + cancellation
 
 ```ts
-import { download } from "grapplehook-core";
+import { download } from 'grapplehook-core';
 
 const task = download({
-  url: "https://youtu.be/<id>",
-  outputDir: "/path/to/output",
-  quality: "1080p",   // "best" | "worst" | "2160p" | "1080p" | ...
-  toMp4: true,        // transcode to editor-friendly H.264/AAC mp4
+  url: 'https://youtu.be/<id>',
+  outputDir: '/path/to/output',
+  quality: '1080p', // "best" | "worst" | "2160p" | "1080p" | ...
+  toMp4: true, // transcode to editor-friendly H.264/AAC mp4
 });
 
-task.on("progress", (p) => {
+task.on('progress', (p) => {
   // p.stage: "info" | "download" | "transcode" | "done"
   // p.percent (0–100 | null), p.speed (bytes/s | null), p.eta (seconds | null)
   console.log(p.stage, p.percent, p.speed, p.eta);
@@ -57,7 +57,7 @@ const { outputPath } = await task.done; // rejects with CancelledError if cancel
 ### Check tool availability (e.g. a settings pane)
 
 ```ts
-import { checkTools } from "grapplehook-core";
+import { checkTools } from 'grapplehook-core';
 
 const status = await checkTools();
 // { ytDlp: true, ffmpeg: true, ffprobe: true, aria2c: false }
@@ -72,10 +72,10 @@ omitted falls back to the env var (`YTDLP_PATH`, `FFMPEG_PATH`, `FFPROBE_PATH`,
 ```ts
 const config = {
   tools: {
-    ytDlp: "/app/resources/bin/yt-dlp",
-    ffmpeg: "/app/resources/bin/ffmpeg",
-    ffprobe: "/app/resources/bin/ffprobe",
-    aria2c: "/app/resources/bin/aria2c",
+    ytDlp: '/app/resources/bin/yt-dlp',
+    ffmpeg: '/app/resources/bin/ffmpeg',
+    ffprobe: '/app/resources/bin/ffprobe',
+    aria2c: '/app/resources/bin/aria2c',
   },
 };
 

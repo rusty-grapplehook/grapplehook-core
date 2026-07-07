@@ -1,29 +1,21 @@
-import fs from "node:fs";
-import type { ChildProcess } from "node:child_process";
-import type { DownloadOptions, ProgressEvent } from "./types.js";
-import type { ResolvedTools } from "./binaries.js";
-import { capture, spawnStreaming } from "./exec.js";
-import { makeFfmpegProgressParser } from "./progress.js";
+import fs from 'node:fs';
+import type { ChildProcess } from 'node:child_process';
+import type { DownloadOptions, ProgressEvent } from './types.js';
+import type { ResolvedTools } from './binaries.js';
+import { capture, spawnStreaming } from './exec.js';
+import { makeFfmpegProgressParser } from './progress.js';
 
-const DETACHED = process.platform !== "win32";
+const DETACHED = process.platform !== 'win32';
 
 export interface TranscodeHooks {
-  onProgress?: (p: Omit<ProgressEvent, "stage">) => void;
+  onProgress?: (p: Omit<ProgressEvent, 'stage'>) => void;
   onLog?: (line: string) => void;
   /** Called with the ffmpeg child (and null when it exits) so the caller can cancel. */
   setChild?: (child: ChildProcess | null) => void;
 }
 
-async function probeCodecs(
-  ffprobe: string,
-  input: string
-): Promise<{ video: string | null; audio: string | null }> {
-  const { stdout } = await capture(ffprobe, [
-    "-v", "error",
-    "-show_entries", "stream=codec_type,codec_name",
-    "-of", "json",
-    input,
-  ]);
+async function probeCodecs(ffprobe: string, input: string): Promise<{ video: string | null; audio: string | null }> {
+  const { stdout } = await capture(ffprobe, ['-v', 'error', '-show_entries', 'stream=codec_type,codec_name', '-of', 'json', input]);
   let video: string | null = null;
   let audio: string | null = null;
   try {
@@ -31,8 +23,8 @@ async function probeCodecs(
       streams?: Array<{ codec_type?: string; codec_name?: string }>;
     };
     for (const s of data.streams ?? []) {
-      if (s.codec_type === "video" && !video) video = s.codec_name ?? null;
-      if (s.codec_type === "audio" && !audio) audio = s.codec_name ?? null;
+      if (s.codec_type === 'video' && !video) video = s.codec_name ?? null;
+      if (s.codec_type === 'audio' && !audio) audio = s.codec_name ?? null;
     }
   } catch {
     /* leave nulls; we'll just re-encode */
@@ -42,12 +34,7 @@ async function probeCodecs(
 
 async function probeDuration(ffprobe: string, input: string): Promise<number | null> {
   try {
-    const { stdout } = await capture(ffprobe, [
-      "-v", "error",
-      "-show_entries", "format=duration",
-      "-of", "default=nw=1:nk=1",
-      input,
-    ]);
+    const { stdout } = await capture(ffprobe, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', input]);
     const n = parseFloat(stdout.trim());
     return Number.isFinite(n) ? n : null;
   } catch {
@@ -63,41 +50,30 @@ export async function transcodeToMp4(
   output: string,
   opts: DownloadOptions,
   tools: ResolvedTools,
-  hooks: TranscodeHooks = {}
+  hooks: TranscodeHooks = {},
 ): Promise<void> {
   const { video, audio } = await probeCodecs(tools.ffprobe, input);
   const duration = await probeDuration(tools.ffprobe, input);
 
   const crf = opts.crf ?? 18;
-  const preset = opts.preset ?? "medium";
-  const copyVideo = video === "h264";
-  const copyAudio = audio === "aac";
+  const preset = opts.preset ?? 'medium';
+  const copyVideo = video === 'h264';
+  const copyAudio = audio === 'aac';
 
-  const args = ["-y", "-i", input, "-progress", "pipe:1", "-nostats"];
+  const args = ['-y', '-i', input, '-progress', 'pipe:1', '-nostats'];
   if (copyVideo) {
-    args.push("-c:v", "copy");
+    args.push('-c:v', 'copy');
   } else {
-    args.push(
-      "-c:v", "libx264",
-      "-preset", preset,
-      "-crf", String(crf),
-      "-pix_fmt", "yuv420p"
-    );
+    args.push('-c:v', 'libx264', '-preset', preset, '-crf', String(crf), '-pix_fmt', 'yuv420p');
   }
   if (audio) {
-    args.push("-c:a", copyAudio ? "copy" : "aac");
-    if (!copyAudio) args.push("-b:a", "192k");
+    args.push('-c:a', copyAudio ? 'copy' : 'aac');
+    if (!copyAudio) args.push('-b:a', '192k');
   }
-  args.push("-movflags", "+faststart", output);
+  args.push('-movflags', '+faststart', output);
 
   const onStdout = makeFfmpegProgressParser(duration, (p) => hooks.onProgress?.(p));
-  const handle = spawnStreaming(
-    tools.ffmpeg,
-    args,
-    onStdout,
-    (line) => hooks.onLog?.(line),
-    DETACHED
-  );
+  const handle = spawnStreaming(tools.ffmpeg, args, onStdout, (line) => hooks.onLog?.(line), DETACHED);
   hooks.setChild?.(handle.child);
 
   try {

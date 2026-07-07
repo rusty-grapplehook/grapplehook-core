@@ -42,7 +42,7 @@ export interface DownloadOptions {
   filename?: string;
 }
 
-export type DownloadStage = "info" | "download" | "transcode" | "done";
+export type DownloadStage = 'info' | 'download' | 'transcode' | 'done';
 
 export interface ProgressEvent {
   stage: DownloadStage;
