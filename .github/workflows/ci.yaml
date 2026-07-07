@@ -55,11 +55,15 @@ jobs:
           pnpm pack --pack-destination "$RUNNER_TEMP"
           TARBALL=$(ls "$RUNNER_TEMP"/grapplehook-core-*.tgz)
           echo "Inspecting $TARBALL"
-          tar -tf "$TARBALL" | tee /dev/stderr | grep -q "package/dist/index.js"
-          tar -tf "$TARBALL" | grep -q "package/dist/index.cjs"
-          tar -tf "$TARBALL" | grep -q "package/dist/index.d.ts"
-          # Fail if source or config files leak into the tarball
-          if tar -tf "$TARBALL" | grep -E "package/(src/|tsconfig|eslint)"; then
+          CONTENTS=$(tar -tf "$TARBALL")
+          echo "$CONTENTS"
+          for f in dist/index.js dist/index.cjs dist/index.d.ts; do
+            if ! grep -q "package/$f" <<< "$CONTENTS"; then
+              echo "Missing $f in publish tarball" >&2
+              exit 1
+            fi
+          done
+          if grep -E "package/(src/|tsconfig|eslint)" <<< "$CONTENTS"; then
             echo "Unexpected files in publish tarball" >&2
             exit 1
           fi
