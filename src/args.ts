@@ -13,9 +13,18 @@ export function formatSelector(opts: DownloadOptions): string {
   const height = m ? Number(m[1]) : null;
   const worst = q === 'worst' || q === 'lowest';
 
-  if (opts.audioOnly) return worst ? 'worstaudio/worst' : 'bestaudio/best';
-  if (opts.muxed) return worst ? 'worst' : height ? `b[height<=${height}]/b` : 'b';
-  if (worst) return 'wv*+wa/w';
+  if (opts.audioOnly) {
+    return worst ? 'worstaudio/worst' : 'bestaudio/best';
+  }
+
+  if (opts.muxed) {
+    return worst ? 'worst' : height ? `b[height<=${height}]/b` : 'b';
+  }
+
+  if (worst) {
+    return 'wv*+wa/w';
+  }
+
   return height ? `bv*[height<=${height}]+ba/b[height<=${height}]` : 'bv*+ba/b';
 }
 
@@ -23,7 +32,6 @@ export function formatSelector(opts: DownloadOptions): string {
  *  --progress-template so it can be parsed into ProgressEvents. */
 export function buildDownloadArgs(opts: DownloadOptions, tools: ResolvedTools, useAria2c: boolean, destDir: string): string[] {
   const filenameTemplate = opts.filename ? `${opts.filename}.%(ext)s` : '%(title)s.%(ext)s';
-
   const args = [
     '--no-playlist',
     '--newline',
@@ -37,15 +45,17 @@ export function buildDownloadArgs(opts: DownloadOptions, tools: ResolvedTools, u
     '-f',
     formatSelector(opts),
   ];
-
   const connections = opts.connections ?? 8;
+
   if (useAria2c) {
     const x = Math.min(Math.max(1, connections), 16); // aria2c caps at 16/server
+
     args.push('--downloader', tools.aria2c, '--downloader-args', `aria2c:-x ${x} -s ${x} -k 1M --summary-interval=1`);
   } else if (connections > 1) {
     args.push('-N', String(connections));
   }
 
   args.push(opts.url);
+
   return args;
 }

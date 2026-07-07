@@ -32,7 +32,6 @@ export async function getVideoInfo(url: string, config: CoreConfig = {}): Promis
   const tools = resolveTools(config.tools);
   const { stdout } = await capture(tools.ytDlp, ['--no-playlist', '-J', url]);
   const raw = JSON.parse(stdout) as RawInfo;
-
   const formats: VideoFormat[] = (raw.formats ?? []).map((f) => ({
     formatId: f.format_id ?? '',
     ext: f.ext ?? '',
@@ -45,7 +44,6 @@ export async function getVideoInfo(url: string, config: CoreConfig = {}): Promis
     tbr: f.tbr ?? null,
     note: f.format_note ?? null,
   }));
-
   const heights = Array.from(new Set(formats.filter((f) => f.vcodec && f.vcodec !== 'none' && f.height != null).map((f) => f.height as number))).sort(
     (a, b) => b - a,
   );

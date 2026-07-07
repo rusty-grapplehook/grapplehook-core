@@ -9,8 +9,14 @@ export interface ResolvedTools {
 }
 
 function pick(override: string | undefined, envVal: string | undefined, fallback: string): string {
-  if (override && override.trim()) return override.trim();
-  if (envVal && envVal.trim()) return envVal.trim();
+  if (override && override.trim()) {
+    return override.trim();
+  }
+
+  if (envVal && envVal.trim()) {
+    return envVal.trim();
+  }
+
   return fallback;
 }
 
@@ -27,6 +33,7 @@ export function resolveTools(paths: ToolPaths = {}): ResolvedTools {
 async function canRun(bin: string, versionFlag = '--version'): Promise<boolean> {
   try {
     await capture(bin, [versionFlag]);
+
     return true;
   } catch {
     return false;
@@ -53,5 +60,6 @@ export async function checkTools(config: CoreConfig = {}): Promise<ToolAvailabil
     canRun(t.ffprobe, '-version'),
     canRun(t.aria2c),
   ]);
+
   return { ytDlp, ffmpeg, ffprobe, aria2c };
 }
