@@ -19,17 +19,9 @@ export class CancelledError extends Error {
   }
 }
 
-export interface DownloadTaskEvents {
-  progress: (p: ProgressEvent) => void;
-  log: (line: string) => void;
-}
-
-// Typed EventEmitter surface via declaration merging.
-export interface IDownloadTask {
-  on<E extends keyof DownloadTaskEvents>(event: E, listener: DownloadTaskEvents[E]): this;
-  once<E extends keyof DownloadTaskEvents>(event: E, listener: DownloadTaskEvents[E]): this;
-  off<E extends keyof DownloadTaskEvents>(event: E, listener: DownloadTaskEvents[E]): this;
-  emit<E extends keyof DownloadTaskEvents>(event: E, ...args: Parameters<DownloadTaskEvents[E]>): boolean;
+interface DownloadTaskEvents {
+  progress: [p: ProgressEvent];
+  log: [line: string];
 }
 
 /**
@@ -37,7 +29,7 @@ export interface IDownloadTask {
  * for the result, and call `cancel()` to stop it (kills subprocesses and
  * cleans up partial files).
  */
-export class DownloadTask extends EventEmitter {
+export class DownloadTask extends EventEmitter<DownloadTaskEvents> {
   /** Resolves with the output path, or rejects (CancelledError on cancel). */
   readonly done: Promise<DownloadResult>;
 
@@ -191,6 +183,6 @@ export class DownloadTask extends EventEmitter {
 }
 
 /** Start a download. Returns a DownloadTask (events + `done` promise + `cancel()`). */
-export function download(options: DownloadOptions, config?: CoreConfig): IDownloadTask {
+export function download(options: DownloadOptions, config?: CoreConfig): DownloadTask {
   return new DownloadTask(options, config);
 }
