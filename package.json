@@ -1,0 +1,46 @@
+{
+  "name": "grapplehook-core",
+  "version": "0.1.0",
+  "description": "Framework-agnostic core for grapplehook: orchestrates yt-dlp + ffmpeg + aria2c to fetch video info and download/transcode videos, with structured progress and cancellation.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --sourcemap",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "yt-dlp",
+    "ffmpeg",
+    "aria2c",
+    "youtube",
+    "download",
+    "transcode",
+    "video",
+    "core",
+    "grapplehook"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+}
