@@ -13,7 +13,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0" // this is so stupid lol, thanks tsup
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"]
 }

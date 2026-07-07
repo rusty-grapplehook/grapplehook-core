@@ -26,7 +26,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
     "format": "prettier . --write",
-    "lint": "eslint --fix src/",
+    "lint": "eslint --fix",
     "bonita": "pnpm run lint && pnpm run format"
   },
   "keywords": [
