@@ -1,6 +1,6 @@
 {
   "name": "grapplehook-core",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Framework-agnostic core for grapplehook: orchestrates yt-dlp + ffmpeg + aria2c to fetch video info and download/transcode videos, with structured progress and cancellation.",
   "type": "module",
   "sideEffects": false,
