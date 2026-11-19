@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **This project has moved.** Grapplehook is now a single desktop app at **[kitsupanic/Grapplehook](https://github.com/kitsupanic/Grapplehook)**, built with Tauri. It replaces the whole old stack, including this package, which is deprecated on npm. This repo is archived and no longer updated.
+>
+> **[Download the new app](https://github.com/kitsupanic/Grapplehook/releases/latest)**
+
 # grapplehook-core
 
 Framework-agnostic core for **grapplehook**. It orchestrates `yt-dlp`, `ffmpeg`,
